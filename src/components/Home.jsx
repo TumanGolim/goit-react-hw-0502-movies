@@ -25,6 +25,10 @@ const Home = () => {
 
   return (
     <div>
+      <div>
+        <Link to="/">Home</Link>
+        <Link to="/movies">Movies</Link>
+      </div>
       <h2>Trending Movies</h2>
       <ul>
         {movies.map(movie => (
