@@ -1,13 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { searchMovies } from './api'; 
+import React, { useState } from 'react';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
-function Movies() {
-  const [searchTerm, setSearchTerm] = useState('');
+const API_KEY = '6275ff62c216e0d575843f8efbbe5c76';
+
+const Movies = () => {
+  const [query, setQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
 
-  const handleSearch = async () => {
-    const results = await searchMovies(searchTerm);
-    setSearchResults(results);
+  const searchMovies = async () => {
+    try {
+      const response = await axios.get(
+        `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}`
+      );
+      setSearchResults(response.data.results);
+    } catch (error) {
+      console.error('Error searching movies:', error);
+      setSearchResults([]);
+    }
   };
 
   return (
@@ -15,17 +25,19 @@ function Movies() {
       <h2>Search Movies</h2>
       <input
         type="text"
-        value={searchTerm}
-        onChange={e => setSearchTerm(e.target.value)}
+        value={query}
+        onChange={e => setQuery(e.target.value)}
       />
-      <button onClick={handleSearch}>Search</button>
+      <button onClick={searchMovies}>Search</button>
       <ul>
         {searchResults.map(movie => (
-          <li key={movie.id}>{movie.title}</li>
+          <li key={movie.id}>
+            <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
+          </li>
         ))}
       </ul>
     </div>
   );
-}
+};
 
 export default Movies;
