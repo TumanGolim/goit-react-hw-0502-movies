@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 
 const API_KEY = '6275ff62c216e0d575843f8efbbe5c76';
 
 const MovieDetails = () => {
   const { movieId } = useParams();
+  const navigate = useNavigate();
   const [movieDetails, setMovieDetails] = useState(null);
   const [cast, setCast] = useState([]);
   const [reviews, setReviews] = useState([]);
@@ -53,6 +54,16 @@ const MovieDetails = () => {
     }
   };
 
+  const handleFetchMovieCast = () => {
+    fetchMovieCast();
+    navigate(`/movies/${movieId}/cast`);
+  };
+
+  const handleFetchMovieReviews = () => {
+    fetchMovieReviews();
+    navigate(`/movies/${movieId}/reviews`);
+  };
+
   if (!movieDetails) {
     return <div>Loading...</div>;
   }
@@ -84,8 +95,8 @@ const MovieDetails = () => {
       <p>Release Date: {release_date}</p>
       <p>Runtime: {runtime} minutes</p>
       <h3>Additional information</h3>
-      <button onClick={fetchMovieCast}>Cast</button> <br />
-      <button onClick={fetchMovieReviews}>Reviews</button>
+      <button onClick={handleFetchMovieCast}>Cast</button> <br />
+      <button onClick={handleFetchMovieReviews}>Reviews</button>
       {activeTab === 'cast' && (
         <div>
           <h2>Movie Cast</h2>
