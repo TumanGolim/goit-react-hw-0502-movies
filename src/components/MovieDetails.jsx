@@ -76,7 +76,6 @@ const MovieDetails = () => {
         <Link to="/movies">Movies</Link>
       </div>
       <Link to="/">Go back</Link>
-      
       <h2>{title}</h2>
       <img src={posterUrl} alt={`${title} Poster`} />
       <p>User Score: {vote_average * 10}%</p>
@@ -84,10 +83,9 @@ const MovieDetails = () => {
       <p>Genres: {genres.map(genre => genre.name).join(', ')}</p>
       <p>Release Date: {release_date}</p>
       <p>Runtime: {runtime} minutes</p>
-<h3>Additional information</h3>
+      <h3>Additional information</h3>
       <button onClick={fetchMovieCast}>Cast</button> <br />
       <button onClick={fetchMovieReviews}>Reviews</button>
-
       {activeTab === 'cast' && (
         <div>
           <h2>Movie Cast</h2>
@@ -98,7 +96,6 @@ const MovieDetails = () => {
           </ul>
         </div>
       )}
-
       {activeTab === 'reviews' && (
         <div>
           <h2>Movie Reviews</h2>
