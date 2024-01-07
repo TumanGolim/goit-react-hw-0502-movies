@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 
 const API_KEY = '6275ff62c216e0d575843f8efbbe5c76';
 
 const MovieDetails = () => {
   const { movieId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const cameBack = location.state?.from ?? '/';
   const [movieDetails, setMovieDetails] = useState(null);
   const [cast, setCast] = useState([]);
   const [reviews, setReviews] = useState([]);
@@ -56,12 +58,22 @@ const MovieDetails = () => {
 
   const handleFetchMovieCast = () => {
     fetchMovieCast();
-    navigate(`/movies/${movieId}/cast`);
+    navigate(`/movies/${movieId}/cast`, {
+      state: { from: cameBack },
+      replace: true,
+    });
   };
 
   const handleFetchMovieReviews = () => {
     fetchMovieReviews();
-    navigate(`/movies/${movieId}/reviews`);
+    navigate(`/movies/${movieId}/reviews`, {
+      state: { from: cameBack },
+      replace: true,
+    });
+  };
+
+  const handleGoBack = () => {
+    navigate(-1);
   };
 
   if (!movieDetails) {
@@ -78,7 +90,9 @@ const MovieDetails = () => {
     poster_path,
   } = movieDetails;
 
-  const posterUrl = `https://image.tmdb.org/t/p/w500${poster_path}`;
+  const posterUrl = poster_path
+    ? `https://image.tmdb.org/t/p/w500${poster_path}`
+    : null;
 
   return (
     <div>
@@ -86,17 +100,21 @@ const MovieDetails = () => {
         <Link to="/">Home</Link>
         <Link to="/movies">Movies</Link>
       </div>
-      <Link to="/">Go back</Link>
+      <button onClick={handleGoBack}>Go back</button>
       <h2>{title}</h2>
-      <img src={posterUrl} alt={`${title} Poster`} />
+      {posterUrl && <img src={posterUrl} alt={`${title} Poster`} />}
       <p>User Score: {vote_average * 10}%</p>
       <p>Overview: {overview}</p>
       <p>Genres: {genres.map(genre => genre.name).join(', ')}</p>
       <p>Release Date: {release_date}</p>
       <p>Runtime: {runtime} minutes</p>
       <h3>Additional information</h3>
-      <button onClick={handleFetchMovieCast}>Cast</button> <br />
-      <button onClick={handleFetchMovieReviews}>Reviews</button>
+      <Link to={`cast`} state={{ from: cameBack }}>
+        <button onClick={handleFetchMovieCast}>Cast</button>
+      </Link>
+      <Link to={`reviews`} state={{ from: cameBack }}>
+        <button onClick={handleFetchMovieReviews}>Reviews</button>
+      </Link>
       {activeTab === 'cast' && (
         <div>
           <h2>Movie Cast</h2>

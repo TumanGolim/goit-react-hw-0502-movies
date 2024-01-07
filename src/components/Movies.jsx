@@ -22,6 +22,10 @@ const Movies = () => {
 
   return (
     <div>
+      <div>
+        <Link to="/">Home</Link>
+        <Link to="/movies">Movies</Link>
+      </div>
       <h2>Search Movies</h2>
       <input
         type="text"
