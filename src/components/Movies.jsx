@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 const API_KEY = '6275ff62c216e0d575843f8efbbe5c76';
 
 const Movies = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [query, setQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
 
@@ -14,11 +16,25 @@ const Movies = () => {
         `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}`
       );
       setSearchResults(response.data.results);
+
+      const params = new URLSearchParams(location.search);
+      params.set('query', query);
+      navigate(`?${params.toString()}`);
     } catch (error) {
       console.error('Error searching movies:', error);
       setSearchResults([]);
     }
   };
+
+  const handleInputChange = e => {
+    setQuery(e.target.value);
+  };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const queryParam = params.get('query') || '';
+    setQuery(queryParam);
+  }, [location.search]);
 
   return (
     <div>
@@ -27,11 +43,7 @@ const Movies = () => {
         <Link to="/movies">Movies</Link>
       </div>
       <h2>Search Movies</h2>
-      <input
-        type="text"
-        value={query}
-        onChange={e => setQuery(e.target.value)}
-      />
+      <input type="text" value={query} onChange={handleInputChange} />
       <button onClick={searchMovies}>Search</button>
       <ul>
         {searchResults.map(movie => (

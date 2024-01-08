@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 
 const API_KEY = '6275ff62c216e0d575843f8efbbe5c76';
 
 const MovieDetails = () => {
   const { movieId } = useParams();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const cameBack = location.state?.from ?? '/';
+  const navigate = useNavigate(); 
   const [movieDetails, setMovieDetails] = useState(null);
   const [cast, setCast] = useState([]);
   const [reviews, setReviews] = useState([]);
-  const [activeTab, setActiveTab] = useState(null);
+  const [activeTab, setActiveTab] = useState('');
 
   useEffect(() => {
     const fetchMovieDetails = async () => {
@@ -56,26 +54,6 @@ const MovieDetails = () => {
     }
   };
 
-  const handleFetchMovieCast = () => {
-    fetchMovieCast();
-    navigate(`/movies/${movieId}/cast`, {
-      state: { from: cameBack },
-      replace: true,
-    });
-  };
-
-  const handleFetchMovieReviews = () => {
-    fetchMovieReviews();
-    navigate(`/movies/${movieId}/reviews`, {
-      state: { from: cameBack },
-      replace: true,
-    });
-  };
-
-  const handleGoBack = () => {
-    navigate(-1);
-  };
-
   if (!movieDetails) {
     return <div>Loading...</div>;
   }
@@ -89,7 +67,6 @@ const MovieDetails = () => {
     runtime,
     poster_path,
   } = movieDetails;
-
   const posterUrl = poster_path
     ? `https://image.tmdb.org/t/p/w500${poster_path}`
     : null;
@@ -100,7 +77,7 @@ const MovieDetails = () => {
         <Link to="/">Home</Link>
         <Link to="/movies">Movies</Link>
       </div>
-      <button onClick={handleGoBack}>Go back</button>
+      <button onClick={() => navigate(-1)}>Go back</button>{' '}
       <h2>{title}</h2>
       {posterUrl && <img src={posterUrl} alt={`${title} Poster`} />}
       <p>User Score: {vote_average * 10}%</p>
@@ -109,11 +86,11 @@ const MovieDetails = () => {
       <p>Release Date: {release_date}</p>
       <p>Runtime: {runtime} minutes</p>
       <h3>Additional information</h3>
-      <Link to={`cast`} state={{ from: cameBack }}>
-        <button onClick={handleFetchMovieCast}>Cast</button>
+      <Link to="cast" onClick={fetchMovieCast}>
+        Cast
       </Link>
-      <Link to={`reviews`} state={{ from: cameBack }}>
-        <button onClick={handleFetchMovieReviews}>Reviews</button>
+      <Link to="reviews" onClick={fetchMovieReviews}>
+        Reviews
       </Link>
       {activeTab === 'cast' && (
         <div>
