@@ -23,6 +23,7 @@ const Home = () => {
     fetchTrendingMovies();
   }, []);
 
+  
   return (
     <div>
       <div>
