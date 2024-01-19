@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 export const SearchBox = ({ value, onChange }) => {
   return (
     <Wrapper>
