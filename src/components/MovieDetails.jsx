@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 const API_KEY = '6275ff62c216e0d575843f8efbbe5c76';
 
 const MovieDetails = () => {
   const { movieId } = useParams();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [movieDetails, setMovieDetails] = useState(null);
   const [cast, setCast] = useState([]);
   const [reviews, setReviews] = useState([]);
@@ -54,6 +54,27 @@ const MovieDetails = () => {
     }
   };
 
+  const goBack = () => {
+    const previousPath = localStorage.getItem('previousPath') || '/';
+
+    // Удаляем информацию о запросе из URL
+    const newPreviousPath = previousPath.replace(/\?query=.*/, '');
+
+    localStorage.setItem('previousPath', newPreviousPath);
+
+    // Проверяем, с какой страницы был выполнен предыдущий переход
+    const isMoviesPage = previousPath.includes('/movies');
+    const isHomePage = previousPath === '/' || previousPath === '/movies';
+
+    if (isMoviesPage) {
+      navigate(newPreviousPath, { replace: true });
+    } else if (isHomePage) {
+      navigate(-1); // Возврат на предыдущую страницу в истории
+    } else {
+      navigate('/');
+    }
+  };
+
   if (!movieDetails) {
     return <div>Loading...</div>;
   }
@@ -77,7 +98,7 @@ const MovieDetails = () => {
         <Link to="/">Home</Link>
         <Link to="/movies">Movies</Link>
       </div>
-      <button onClick={() => navigate(-1)}>Go back</button>{' '}
+      <button onClick={goBack}>Go back</button>
       <h2>{title}</h2>
       {posterUrl && <img src={posterUrl} alt={`${title} Poster`} />}
       <p>User Score: {vote_average * 10}%</p>

@@ -1,27 +1,28 @@
-import React, { lazy, Suspense } from 'react';
-import { Route, Routes } from 'react-router-dom';
-import NotFound from './NotFound';
+import React from 'react';
+import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom';
+import { QueryParamProvider } from 'use-query-params';
 
-const Home = lazy(() => import('./Home'));
-const Movies = lazy(() => import('./Movies'));
-const MovieDetails = lazy(() => import('./MovieDetails'));
-const Cast = lazy(() => import('./Cast'));
-const Reviews = lazy(() => import('./Reviews'));
+import Home from './Home';
+import Movies from './Movies';
+import MovieDetails from './MovieDetails';
+import Cast from './Cast';
+import Reviews from './Reviews';
+import NotFound from './NotFound'; 
 
-function App() {
+const App = () => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <QueryParamProvider ReactRouterRoute={Route}>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/movies" element={<Movies />} />
         <Route path="/movies/:movieId" element={<MovieDetails />}>
-        <Route path="/movies/:movieId/cast" element={<Cast />} />
-        <Route path="/movies/:movieId/reviews" element={<Reviews />} />
+          <Route path="cast" element={<Cast />} />
+          <Route path="reviews" element={<Reviews />} />
         </Route>
-        <Route path="*" element={<NotFound />} />
+        <Route path="*" element={<NotFound />} /> 
       </Routes>
-    </Suspense>
+    </QueryParamProvider>
   );
-}
+};
 
 export default App;

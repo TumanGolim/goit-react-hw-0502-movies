@@ -19,6 +19,11 @@ const Movies = () => {
 
       const params = new URLSearchParams(location.search);
       params.set('query', query);
+
+      // Сохраняем информацию о последнем переходе
+      localStorage.setItem('previousPage', 'movies');
+      localStorage.setItem('query', query);
+
       navigate(`?${params.toString()}`);
     } catch (error) {
       console.error('Error searching movies:', error);
@@ -34,6 +39,10 @@ const Movies = () => {
     const params = new URLSearchParams(location.search);
     const queryParam = params.get('query') || '';
     setQuery(queryParam);
+
+    // Сохраняем информацию о последнем переходе при загрузке страницы
+    localStorage.setItem('previousPage', 'movies');
+    localStorage.setItem('query', queryParam);
   }, [location.search]);
 
   return (
@@ -48,7 +57,7 @@ const Movies = () => {
       <ul>
         {searchResults.map(movie => (
           <li key={movie.id}>
-            <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
+            <Link to={`/movies/${movie.id}?query=${query}`}>{movie.title}</Link>
           </li>
         ))}
       </ul>

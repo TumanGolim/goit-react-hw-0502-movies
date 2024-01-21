@@ -1,13 +1,13 @@
 import React from 'react';
-import { createRoot } from 'react-dom/client';
+import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import App from './components/App';
 
-const root = document.getElementById('root');
-const reactRoot = createRoot(root);
-
-reactRoot.render(
-  <BrowserRouter basename="/goit-react-hw-05-movies">
-    <App />
-  </BrowserRouter>
+ReactDOM.render(
+  <React.StrictMode>
+    <BrowserRouter basename="/goit-react-hw-05-movies">
+      <App />
+    </BrowserRouter>
+  </React.StrictMode>,
+  document.getElementById('root')
 );
